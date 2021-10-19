@@ -1,16 +1,18 @@
 
 GamePlayManager = {
     init: function() {
-        console.log("init");
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.pageAlignHorizontally = true;
+        game.scale.pageAlignVertically = true;
     },
     preload: function() {
-        console.log("preload");
+        game.load.image('background', 'assets/images/background.png');
     },
     create: function() {
-        console.log("create");
+        game.add.sprite(0, 0, 'background');
     },
     update: function() {
-        console.log("update");
+
     }
 }
 
