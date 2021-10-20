@@ -35,10 +35,12 @@ GamePlayManager = {
 
             this.diamonds[i] = diamond;
             var rectCurrenDiamond = this.getBoundsDiamond(diamond);
+            var rectHorse = this.getBoundsDiamond(this.horse);
 
-            while(this.isOverlapingOtherDiamond(i, rectCurrenDiamond)){
+            while(this.isOverlapingOtherDiamond(i, rectCurrenDiamond) ||
+            this.isRectanglesOverlapping(rectHorse, rectCurrenDiamond)){
                 diamond.x = game.rnd.integerInRange(50,1050);
-                diamond. y= game.rnd.integerInRange(50,600);
+                diamond.y= game.rnd.integerInRange(50,600);
                 rectCurrenDiamond = this.getBoundsDiamond(diamond);
             }
 
@@ -49,9 +51,9 @@ GamePlayManager = {
     onTap:function(){
         this.flagFirsMouseDown = true;
     },
-    getBoundsDiamond:Function(currentDiamond){
-        return new Phaser.Rexctangle(currentDiamond.left, currentDiamond.top, currentDiamond.width, currentDiamond.height);
-    }
+    getBoundsDiamond:function(currentDiamond){
+        return new Phaser.Rectangle(currentDiamond.left, currentDiamond.top, currentDiamond.width, currentDiamond.height);
+    },
     isRectanglesOverlapping: function(rect1, rect2){
         if(rect1.x> rect2.x+rect2.width || rect2.x> rect1.x+rect1.width){
             return false;
@@ -60,10 +62,10 @@ GamePlayManager = {
             return false;
         }
         return true;
-    }
+    },
     isOverlapingOtherDiamond:function(index, rect2){
         for(var i=0; i<index; i++){
-            var rect1 = this.getBoundsDiamond(this.diamond[i]);
+            var rect1 = this.getBoundsDiamond(this.diamonds[i]);
             if(this.isRectanglesOverlapping(rect1, rect2)){
                 return true;
             }
