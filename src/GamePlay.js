@@ -13,6 +13,7 @@ GamePlayManager = {
         game.load.image('background', 'assets/images/background.png');
         game.load.spritesheet('horse', 'assets/images/horse.png', 84, 156, 2);
         game.load.spritesheet('diamonds', 'assets/images/diamonds.png', 81, 84, 4);
+        game.load.image('explosion', 'assets/images/explosion.png');
     },
     create: function() {
         game.add.sprite(0, 0, 'background');
@@ -47,6 +48,18 @@ GamePlayManager = {
 
         }
 
+        this.explosion = game.add.sprite(100,100,'explosion');
+        this.explosion.tweenScale = game.add.tween(this.explosion.scale).to({
+                        x: [0.4, 0.8, 0.4],
+                        y: [0.4, 0.8, 0.4]
+            }, 600, Phaser.Easing.Exponential.Out, false, 0, 0, false);
+
+        this.explosion.tweenAlpha = game.add.tween(this.explosion).to({
+                        aplha: [1, 0.6, 0]
+        }, 600, Phaser.Easing.Exponential.Out, false, 0, 0, false); 
+        
+        this.explosion.anchor.setTo(0.5);
+        this.explosion.visible = false;
     },
     onTap:function(){
         this.flagFirsMouseDown = true;
@@ -81,9 +94,9 @@ GamePlayManager = {
         return new Phaser.Rectangle(x0, y0,width,height);
     },
     render:function(){
-        game.debug.spriteBounds(this.horse);
+        /* game.debug.spriteBounds(this.horse); */
         for(var i=0; i<AMOUNT_DIAMONDS; i++){
-            game.debug.spriteBounds(this.diamonds[i]);
+            /* game.debug.spriteBounds(this.diamonds[i]); */
         }
     },
     update: function(){
@@ -106,8 +119,16 @@ GamePlayManager = {
         for(var i=0; i<AMOUNT_DIAMONDS; i++){
             var rectHorse = this.getBoundsHorse();
             var rectDiamond = this.getBoundsDiamond(this.diamonds[i]);
-            if(this.isRectanglesOverlapping(rectHorse, rectDiamond)){
-                console.log("Colision");
+
+
+            if(this.diamonds[i].visible && this.isRectanglesOverlapping(rectHorse, rectDiamond)){
+                this.diamonds[i].visible = false;
+
+                this.explosion.visible = true;
+                this.explosion.x = this.diamonds[i].x;
+                this.explosion.y = this.diamonds[i].y;
+                this.explosion.tweenScale.start();
+                this.explosion.tweenAlpha.start();
             }
         }
 
