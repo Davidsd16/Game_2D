@@ -72,6 +72,14 @@ GamePlayManager = {
         }
         return false;
     },
+    getBoundsHorse:function(){
+        var x0 = this.horse.x - Math.abs(this.horse.width)/2;
+        var width = Math.abs(this.horse.width);
+        var y0 = this.horse.y - this.horse.height/2;
+        var height = this.horse.height;
+
+        return new Phaser.Rectangle(x0, y0, width, height);
+    },
     update: function(){
         if(this.flagFirsMouseDown){
             var pointerX = game.input.x;
@@ -88,6 +96,15 @@ GamePlayManager = {
 
         this.horse.x +=distX * 0.02;
         this.horse.y +=distY * 0.02;
+
+        for(var i=0; i<AMOUNT_DIAMONDS; i++){
+            var rectHorse = this.getBoundsHorse();
+            var rectDiamond = this.getBoundsDiamond(this.diamond[i]);
+            if(this.isRectanglesOverlapping(rectHorse, rectDiamond)){
+                console.log('colision!!! aaaaa...');
+            }
+        }
+
         }
         
     }
