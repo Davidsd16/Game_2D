@@ -7,7 +7,8 @@ GamePlayManager = {
         game.scale.pageAlignHorizontally = true;
         game.scale.pageAlignVertically = true;
 
-        this.flagFirsMouseDown = false;
+        this.flagFirstMouseDown = false;
+        this.amountDiamondsCaught = 0;
     },
     preload: function() {
         game.load.image('background', 'assets/images/background.png');
@@ -76,10 +77,34 @@ GamePlayManager = {
     increaseScore:function(){
         this.currentScore+=100;
         this.scoreText.text = this.currentScore;
+
+        this.amountDiamondsCaught += 1;
+
+        if(this.amountDiamondsCaught >= AMOUNT_DIAMONDS){
+            this.showFinalMessage('CONGRATULATIONS');
+        }
     },
 
+    showFinalMessage:function(msg){
+        var bgAplha = game.add.bitmapData(game.width, game.height);
+        bgAplha.ctx.fillStyle = '#000000';
+        bgAplha.ctx.fillRect(0,0,game.width, game.height);
+
+        var bg = game.add.sprite(0,0, bgAplha);
+        bg.aplha = 0.5;
+
+        var style = {
+            font: 'bold 60pt Arial',
+            fill: '#FFFFFF',
+            aling: 'center',
+        }
+
+        this.textFieldFinalMsg = game.add.text(game.width/2, geme.height/2, msg, style);
+        this.textFieldFinalMsg.anchor.setTo(0.5);
+
+    },
     onTap:function(){
-        this.flagFirsMouseDown = true;
+        this.flagFirstMouseDown = true;
     },
     getBoundsDiamond:function(currentDiamond){
         return new Phaser.Rectangle(currentDiamond.left, currentDiamond.top, currentDiamond.width, currentDiamond.height);
@@ -117,7 +142,7 @@ GamePlayManager = {
         }
     },
     update: function(){
-        if(this.flagFirsMouseDown){
+        if(this.flagFirstMouseDown){
             var pointerX = game.input.x;
             var pointerY = game.input.y;
 
