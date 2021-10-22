@@ -32,7 +32,7 @@ GamePlayManager = {
             diamond.scale.setTo( 0.30 + game.rnd.frac());
             diamond.anchor.setTo(0.5);
             diamond.x = game.rnd.integerInRange(50,1050);
-            diamond. y= game.rnd.integerInRange(50,600);
+            diamond.y= game.rnd.integerInRange(50,600);
 
             this.diamonds[i] = diamond;
             var rectCurrenDiamond = this.getBoundsDiamond(diamond);
@@ -44,22 +44,24 @@ GamePlayManager = {
                 diamond.y= game.rnd.integerInRange(50,600);
                 rectCurrenDiamond = this.getBoundsDiamond(diamond);
             }
-
-
         }
 
-        this.explosion = game.add.sprite(100,100,'explosion');
-        this.explosion.tweenScale = game.add.tween(this.explosion.scale).to({
-                        x: [0.4, 0.8, 0.4],
-                        y: [0.4, 0.8, 0.4]
-            }, 600, Phaser.Easing.Exponential.Out, false, 0, 0, false);
-
-        this.explosion.tweenAlpha = game.add.tween(this.explosion).to({
-                        aplha: [1, 0.6, 0]
-        }, 600, Phaser.Easing.Exponential.Out, false, 0, 0, false); 
+        this.explosionGroup = game.add.group();
         
-        this.explosion.anchor.setTo(0.5);
-        this.explosion.visible = false;
+        for(var i=0; i<10; i++){
+            this.explosion = this.explosionGroup.create(100,100,'explosion');
+            this.explosion.tweenScale = game.add.tween(this.explosion.scale).to({
+                            x: [0.4, 0.8, 0.4],
+                            y: [0.4, 0.8, 0.4]
+                }, 600, Phaser.Easing.Exponential.Out, false, 0, 0, false);
+    
+            this.explosion.tweenAlpha = game.add.tween(this.explosion).to({
+                            aplha: [1, 0.6, 0]
+                }, 600, Phaser.Easing.Exponential.Out, false, 0, 0, false); 
+            
+            this.explosion.anchor.setTo(0.5);
+            this.explosion.kill();
+        }
     },
     onTap:function(){
         this.flagFirsMouseDown = true;
@@ -120,18 +122,21 @@ GamePlayManager = {
             var rectHorse = this.getBoundsHorse();
             var rectDiamond = this.getBoundsDiamond(this.diamonds[i]);
 
-
             if(this.diamonds[i].visible && this.isRectanglesOverlapping(rectHorse, rectDiamond)){
                 this.diamonds[i].visible = false;
 
-                this.explosion.visible = true;
-                this.explosion.x = this.diamonds[i].x;
-                this.explosion.y = this.diamonds[i].y;
-                this.explosion.tweenScale.start();
-                this.explosion.tweenAlpha.start();
+                var explosion = this.explosionGroup.getFirstDead();
+                if(explosion!=null){
+                    explosion.reset(this.diamonds[i].x, this.diamonds[i].y);
+                    explosion.tweenScale.start();
+                    explosion.tweenAlpha.start();
+
+                   /*  explosion.tweenAplha.onComplete.add(function (currentTarget, currentTween){
+                        currentTarget.kill();
+                    }, this); */
+                }
             }
         }
-
         }
         
     }
