@@ -48,7 +48,7 @@ GamePlayManager = {
 
         this.explosionGroup = game.add.group();
         
-        for(var i=0; i<10; i++){
+        for(var i=0; i<30; i++){
             this.explosion = this.explosionGroup.create(100,100,'explosion');
             this.explosion.tweenScale = game.add.tween(this.explosion.scale).to({
                             x: [0.4, 0.8, 0.4],
@@ -62,7 +62,22 @@ GamePlayManager = {
             this.explosion.anchor.setTo(0.5);
             this.explosion.kill();
         }
+        this.currentScore = 0;
+        var style = {
+            font: 'bold 30pt Arial',
+            fill: '#FFFFFF',
+            aling: 'center' 
+        }
+
+        this.scoreText = game.add.text(game.width/2, 40, '0', style);
+        this.scoreText.anchor.setTo(0.5);
     },
+
+    increaseScore:function(){
+        this.currentScore+=100;
+        this.scoreText.text = this.currentScore;
+    },
+
     onTap:function(){
         this.flagFirsMouseDown = true;
     },
@@ -103,11 +118,11 @@ GamePlayManager = {
     },
     update: function(){
         if(this.flagFirsMouseDown){
-        var pointerX = game.input.x;
-        var pointerY = game.input.y;
+            var pointerX = game.input.x;
+            var pointerY = game.input.y;
 
-        var distX = pointerX - this.horse.x;
-        var distY = pointerY - this.horse.y;
+            var distX = pointerX - this.horse.x;
+            var distY = pointerY - this.horse.y;
 
         if(distX>0){
             this.horse.scale.setTo(1,1);
@@ -123,6 +138,7 @@ GamePlayManager = {
             var rectDiamond = this.getBoundsDiamond(this.diamonds[i]);
 
             if(this.diamonds[i].visible && this.isRectanglesOverlapping(rectHorse, rectDiamond)){
+                this.increaseScore();
                 this.diamonds[i].visible = false;
 
                 var explosion = this.explosionGroup.getFirstDead();
@@ -131,7 +147,7 @@ GamePlayManager = {
                     explosion.tweenScale.start();
                     explosion.tweenAlpha.start();
 
-                   /*  explosion.tweenAplha.onComplete.add(function (currentTarget, currentTween){
+                    /* explosion.tweenAplha.onComplete.add(function (currentTarget, currentTween){
                         currentTarget.kill();
                     }, this); */
                 }
