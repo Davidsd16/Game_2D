@@ -9,6 +9,7 @@ GamePlayManager = {
 
         this.flagFirstMouseDown = false;
         this.amountDiamondsCaught = 0;
+        this.endGame = false;
     },
     preload: function() {
         game.load.image('background', 'assets/images/background.png');
@@ -81,6 +82,7 @@ GamePlayManager = {
         this.amountDiamondsCaught += 1;
 
         if(this.amountDiamondsCaught >= AMOUNT_DIAMONDS){
+            this.endGame = true;
             this.showFinalMessage('CONGRATULATIONS');
         }
     },
@@ -142,7 +144,7 @@ GamePlayManager = {
         }
     },
     update: function(){
-        if(this.flagFirstMouseDown){
+        if(this.flagFirstMouseDown && !this.endGame){
             var pointerX = game.input.x;
             var pointerY = game.input.y;
 
